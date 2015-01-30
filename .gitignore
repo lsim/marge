@@ -3,4 +3,5 @@
 .DS_Store
 /app/bower_components
 /app/js
+/app/css
 /.idea

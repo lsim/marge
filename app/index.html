@@ -3,10 +3,14 @@
 <head>
 <title>Marge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/main.css" rel="stylesheet" />
 </head>
 <body ng-cloak>
   <div id="frame" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0;" ng-controller="margeController">
-    <div style="width: 100%; height: 100%;" ui-ace ng-model="text">
+    <div class="inline" style="width: 50%; height: 100%;" ui-ace ng-model="leftText">
+
+    </div><!--
+ --><div class="inline" style="width: 50%; height: 100%;" ui-ace ng-model="rightText">
 
     </div>
   </div>

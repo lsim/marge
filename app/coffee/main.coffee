@@ -19,8 +19,6 @@ define [
   'app'
   'controllers/margeController'
 ], (angular, app) ->
-  console.log "angular loaded", angular?.version
-
   angular.element(document).ready ->
     $injector = angular.bootstrap(document, [app.name])
 
