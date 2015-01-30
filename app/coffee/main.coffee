@@ -1,11 +1,11 @@
 # Set up requirejs
 requirejs.config(
+  baseUrl: 'js'
   paths:
-    angular: 'bower_components/angular/angular.min'
-    ace: 'bower_components/ace-builds/src-noconflict/ace'
-    'ui-ace': 'bower_components/angular-ui-ace/ui-ace'
-    _: 'bower_components/lodash/lodash.min'
-    app: 'js/app'
+    angular: '../lib/angular.min'
+    ace: '../lib/ace'
+    'ui-ace': '../lib/ui-ace.min'
+    _: '../lib/lodash.min'
 
   shim:
     _: { exports: '_' }
@@ -14,9 +14,14 @@ requirejs.config(
       deps: ['ace', 'angular']
 )
 
-define ['angular', 'app'], (angular, app) ->
-  console.debug "angular loaded", angular?.version
+define [
+  'angular'
+  'app'
+  'controllers/margeController'
+], (angular, app) ->
+  console.log "angular loaded", angular?.version
 
   angular.element(document).ready ->
-    angular.bootstrap(document, [app.name])
+    $injector = angular.bootstrap(document, [app.name])
+
 

@@ -4,6 +4,5 @@ define [
 ], (angular) ->
   margeModule = angular.module('marge', ['ui.ace'])
 
-
   #return
   margeModule
