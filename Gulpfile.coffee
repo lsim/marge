@@ -23,5 +23,4 @@ gulp.task 'watch', ['build'], ->
     ], { root: 'app/coffee' }, 'build')
 
 gulp.task 'build', ['compile-coffee', 'compile-sass'], ->
-
-gulp.task 'default', ['build'], ->
+gulp.task 'default', ['watch'], ->
