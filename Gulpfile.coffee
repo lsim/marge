@@ -20,12 +20,13 @@ gulp.task 'compile-sass', ->
   .pipe(handle(sass()))
   .pipe(gulp.dest('app/css'))
 
-gulp.task 'watch', ['build'], ->
-  watch(
-    [
-      'app/coffee/**/*.coffee'
-      'app/scss/**/*.scss'
-    ], { root: 'app/coffee' }, 'build')
+gulp.task 'coffee-watch', ['compile-coffee'], ->
+  watch([], { root: 'app/coffee' }, 'compile-coffee')
+
+gulp.task 'scss-watch', ['compile-sass'], ->
+  watch([], { root: 'app/scss' }, 'compile-sass')
+
+gulp.task 'watch', ['coffee-watch', 'scss-watch'], ->
 
 gulp.task 'build', ['compile-coffee', 'compile-sass'], ->
 gulp.task 'default', ['watch'], ->
