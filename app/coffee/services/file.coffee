@@ -1,5 +1,6 @@
-define ['app'], (app) ->
+define ['app', 'ace/ace', 'ace/ext-modelist'], (app, ace) ->
   fs = require('fs')
+  modelist = ace.require('ace/ext/modelist')
 
   app.factory 'filesvc', ($q) ->
     (filePath) ->

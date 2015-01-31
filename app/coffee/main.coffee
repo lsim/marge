@@ -11,15 +11,20 @@ requirejs.config(
     _: { exports: '_' }
     angular: { exports: 'angular' }
     'ui-ace':
-      deps: ['ace', 'angular']
+      deps: ['ace/ace', 'angular']
+    'ace/ace': { exports: 'ace' }
 )
 
-define [
-  'angular'
-  'app'
-  'controllers/margeController'
-], (angular, app) ->
-  angular.element(document).ready ->
-    $injector = angular.bootstrap(document, [app.name])
+# The ace plugins assume (when in no-conflict mode) that ace is on window when they are loaded. So we load ace first of all.
+req ['ace/ace'], () ->
+
+  req [
+    'angular'
+    'app'
+    'controllers/margeController'
+    'directives/codePanel'
+  ], (angular, app) ->
+    angular.element(document).ready ->
+      $injector = angular.bootstrap(document, [app.name])
 
 

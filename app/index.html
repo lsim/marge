@@ -4,14 +4,36 @@
 <title>Marge</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="css/main.css" rel="stylesheet" />
+<style type="text/css">
+  .ng-cloak, [ng-cloak] { display:none; }
+</style>
+
+  <script type="text/javascript">
+    process.on('uncaughtException', function(e) {
+      // TODO: log the error and gtfo
+    });
+  </script>
+
+
 </head>
 <body ng-cloak>
   <div id="frame" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0;" ng-controller="margeController">
-    <div class="inline" style="width: 50%; height: 100%;" ui-ace ng-model="leftText">
+    <div>
+      <div class="inline" style="width: 50%; text-align: center;">{{leftPath}}</div><!--
+   --><div class="inline" style="width: 50%; text-align: center;">{{rightPath}}</div>
+    </div>
+    <div style="position:relative;" class="full-height">
+      <div class="full-height">
+        <div class="inline" style="width: 50%; height: 50%;" code-panel content="leftContent">
 
-    </div><!--
- --><div class="inline" style="width: 50%; height: 100%;" ui-ace ng-model="rightText">
+        </div><!--
+     --><div class="inline" style="width: 50%; height: 50%;" code-panel content="rightContent">
 
+        </div><!--
+     --><div style="width: 100%; height: 50%;" code-panel content="resultContent">
+
+        </div>
+      </div>
     </div>
   </div>
 </body>

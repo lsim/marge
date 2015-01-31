@@ -1,19 +1,28 @@
-define ['app', 'gui', '_', 'services/file', 'services/diff'], (app, gui, _) ->
+define ['app', 'gui', '_', 'services/file', 'services/diff', 'services/aceMode'], (app, gui, _) ->
   minimist = require('minimist')
 
-  app.controller 'margeController', ($scope, filesvc, diffsvc) ->
+  # This is the outermost controller of the application. It parses command line arguments etc
+
+  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc) ->
 
     argv = minimist(gui.App.argv)
     if argv._.length >= 2
-      filesvc(argv._[0]).then (contents) ->
-        $scope.leftText = contents
-      filesvc(argv._[1]).then (contents) ->
-        $scope.rightText = contents
+      $scope.leftPath = argv._[0]
+      $scope.rightPath = argv._[1]
+
+      filesvc($scope.leftPath).then (contents) ->
+        $scope.leftContent =
+          text: contents
+          mode: aceModesvc($scope.leftPath)
+      filesvc($scope.rightPath).then (contents) ->
+        $scope.rightContent =
+          text: contents
+          mode: aceModesvc($scope.rightPath)
     else
       $scope.leftText = "invoke with two file paths as arguments" # Find better way of displaying this
 
-    $scope.$watch "'' + !!leftText + !!rightText", ->
-      return unless $scope.leftText? and $scope.rightText?
+    $scope.$watch "'' + !!leftContent + !!rightContent", ->
+      return unless $scope.leftContent? and $scope.rightContent?
 
-      console.log "diff",  diffsvc.diff($scope.leftText, $scope.rightText)
+      console.log "diff",  diffsvc.diff($scope.leftContent.text, $scope.rightContent.text)
 
