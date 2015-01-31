@@ -8,23 +8,32 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
       content: '='
 
     template: """
-        <div ui-ace="{onLoad: aceLoaded}" ng-model="text" class="full-height" />
+        <div ui-ace="{onLoad: aceLoaded}" ng-model="content.text" class="full-height" />
     """
     controller: ['$scope', ($scope) ->
 
-      $scope.$watch 'content', (newValue) ->
-        return unless newValue?
-        $scope.text = newValue.text
+      updateHighlights = ->
+        return unless $scope.content?.highlights? and $scope.session?
+        if $scope.markerIds
+          _.each $scope.markerIds, (markerId) ->
+            $scope.session.removeMarker(markerId)
+        $scope.markerIds = []
+        $scope.content.highlights.forEach((highlight) ->
+          range = new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd)
+          $scope.markerIds.push $scope.session.addMarker(range, 'ace_difference', 'text'))
 
-      $scope.$watch "'' + !!content + !!session", ->
-        return unless $scope.content? and $scope.session
+      updateMode = ->
+        return unless $scope.content?.highlights? and $scope.session?
         $scope.session.setMode
           path: $scope.content.mode
-        _.map($scope.content.highlights, (highlight) -> new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd))
-        .forEach((range) -> $scope.session.addMarker(range, 'ace_difference', 'text'))
+
+      $scope.$watch "content.highlights", updateHighlights
+
+      $scope.$watch "content.mode", updateMode
 
       $scope.aceLoaded = (editor) ->
-        editor.session.doc.foobar = 'barfoo'
         $scope.session = editor.session
+        updateHighlights()
+        updateMode()
     ]
 #    link: ($scope, $element, $attrs) ->

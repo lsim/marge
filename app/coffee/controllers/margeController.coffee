@@ -26,8 +26,7 @@ define ['app', 'gui', '_',
     else
       $scope.leftText = "invoke with two file paths as arguments" # Find better way of displaying this
 
-    $scope.$watch "'' + !!leftContent + !!rightContent", ->
-      return unless $scope.leftContent? and $scope.rightContent?
+    updateDiffs = () ->
       differences = diffsvc.diff($scope.leftContent.text, $scope.rightContent.text)
       leftHighlights = highlightsvc(differences, -1)
       rightHighlights = highlightsvc(differences, 1)
@@ -35,4 +34,10 @@ define ['app', 'gui', '_',
       $scope.leftContent.highlights = leftHighlights
       $scope.rightContent.highlights = rightHighlights
 
+    $scope.$watch "'' + !!leftContent + !!rightContent", ->
+      return unless $scope.leftContent? and $scope.rightContent?
+      updateDiffs()
 
+    $scope.$watch "leftContent.text + rightContent.text", ->
+      return unless $scope.leftContent? and $scope.rightContent?
+      updateDiffs()
