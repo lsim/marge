@@ -1,9 +1,14 @@
-define ['app', 'gui', '_', 'services/file', 'services/diff', 'services/aceMode'], (app, gui, _) ->
+define ['app', 'gui', '_',
+        'services/file',
+        'services/diff',
+        'services/aceMode',
+        'services/highlight'
+], (app, gui, _) ->
   minimist = require('minimist')
 
   # This is the outermost controller of the application. It parses command line arguments etc
 
-  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc) ->
+  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc, highlightsvc) ->
 
     argv = minimist(gui.App.argv)
     if argv._.length >= 2
@@ -23,6 +28,11 @@ define ['app', 'gui', '_', 'services/file', 'services/diff', 'services/aceMode']
 
     $scope.$watch "'' + !!leftContent + !!rightContent", ->
       return unless $scope.leftContent? and $scope.rightContent?
+      differences = diffsvc.diff($scope.leftContent.text, $scope.rightContent.text)
+      leftHighlights = highlightsvc(differences, -1)
+      rightHighlights = highlightsvc(differences, 1)
 
-      console.log "diff",  diffsvc.diff($scope.leftContent.text, $scope.rightContent.text)
+      $scope.leftContent.highlights = leftHighlights
+      $scope.rightContent.highlights = rightHighlights
+
 
