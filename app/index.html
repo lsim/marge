@@ -9,14 +9,14 @@
 </style>
 
   <script type="text/javascript">
-    console.debug("cwd before", process.cwd());
-    process.chdir(process.env.PWD);
-    console.debug("cwd after", process.cwd());
+    if(process.env.PWD) { // When launched from the command line, we need to sort out the current working directory as a nw bug workaround
+      process.chdir(process.env.PWD);
+    }
     process.on('uncaughtException', function(e) {
-      // TODO: log the error and gtfo
+      console.log(e);
+      process.exit(1);
     });
   </script>
-
 
 </head>
 <body ng-cloak>
@@ -31,5 +31,5 @@
     </div>
   </div>
 </body>
-<script data-main="js/main" src="bower_components/requirejs/myrequire.js"></script>
+<script data-main="js/main" src="lib/myrequire.js"></script>
 </html>
