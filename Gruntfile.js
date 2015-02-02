@@ -6,7 +6,8 @@ module.exports = function (grunt) {
   // load all grunt tasks
   require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
-
+  var mainPackageJSON = grunt.file.readJSON('package.json');
+  var node_modules_included = Object.keys(mainPackageJSON.dependencies);
   // configurable paths
   var config = {
     app: 'app',
@@ -131,7 +132,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= config.app %>',
           dest: '<%= config.distMac64 %>/node-webkit.app/Contents/Resources/app.nw',
-          src: ['lib/**/*', 'css/**/*.css', 'js/**/*.js', '*']
+          src: ['lib/**', 'css/**/*', 'js/**', 'package.json', 'index.html']
         }, {
           expand: true,
           cwd: '<%= config.resources %>/mac/',
@@ -148,7 +149,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= config.app %>/../node_modules/',
           dest: '<%= config.distMac64 %>/node-webkit.app/Contents/Resources/app.nw/node_modules/',
-          src: '**'
+          src: node_modules_included.map(function(dir) { return dir + "/**"})
         }]
       },
       webkit32: {
