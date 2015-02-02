@@ -2,12 +2,12 @@
   "name": "marge",
   "version": "0.0.0",
   "description": "",
-  "keywords": [],
+  "keywords": ["3-way","merge","diff"],
   "homepage": "https://github.com/lsim/marge",
   "bugs": "https://github.com/lsim/marge/issues",
   "author": {
-    "name": "",
-    "email": "",
+    "name": "Lars Ole Simonsen",
+    "email": "larsolesimonsen@gmail.com",
     "url": "https://github.com/lsim"
   },
   "repository": {

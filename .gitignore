@@ -5,3 +5,6 @@
 /app/js
 /app/css
 /.idea
+dist
+resources/node-webkit
+marge.log

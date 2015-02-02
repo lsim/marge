@@ -82,7 +82,7 @@ module.exports = function (grunt) {
       options: {
         jshintrc: '.jshintrc'
       },
-      files: '<%= config.app %>/js/*.js'
+      files: '<%= config.app %>/js/**/*.js'
     },
     copy: {
       appLinux: {
@@ -131,7 +131,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= config.app %>',
           dest: '<%= config.distMac64 %>/node-webkit.app/Contents/Resources/app.nw',
-          src: '**'
+          src: ['lib/**/*', 'css/**/*.css', 'js/**/*.js', '*']
         }, {
           expand: true,
           cwd: '<%= config.resources %>/mac/',
@@ -189,7 +189,7 @@ module.exports = function (grunt) {
       },
       finalWindowsApp: {
         options: {
-          archive: '<%= config.distWin %>/lomerge.zip'
+          archive: '<%= config.distWin %>/marge.zip'
         },
         files: [{
           expand: true,
@@ -202,13 +202,13 @@ module.exports = function (grunt) {
       macApp32: {
         files: [{
           src: '<%= config.distMac32 %>/node-webkit.app',
-          dest: '<%= config.distMac32 %>/lomerge.app'
+          dest: '<%= config.distMac32 %>/marge.app'
         }]
       },
       macApp64: {
         files: [{
           src: '<%= config.distMac64 %>/node-webkit.app',
-          dest: '<%= config.distMac64 %>/lomerge.app'
+          dest: '<%= config.distMac64 %>/marge.app'
         }]
       },
       zipToApp: {
@@ -222,7 +222,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('chmod32', 'Add lost Permissions.', function () {
     var fs = require('fs'),
-      path = config.distMac32 + '/lomerge.app/Contents/';
+      path = config.distMac32 + '/marge.app/Contents/';
     fs.chmodSync(path + 'Frameworks/node-webkit Helper EH.app/Contents/MacOS/node-webkit Helper EH', '555');
     fs.chmodSync(path + 'Frameworks/node-webkit Helper NP.app/Contents/MacOS/node-webkit Helper NP', '555');
     fs.chmodSync(path + 'Frameworks/node-webkit Helper.app/Contents/MacOS/node-webkit Helper', '555');
@@ -231,7 +231,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('chmod64', 'Add lost Permissions.', function () {
     var fs = require('fs'),
-      path = config.distMac64 + '/lomerge.app/Contents/';
+      path = config.distMac64 + '/marge.app/Contents/';
     fs.chmodSync(path + 'Frameworks/node-webkit Helper EH.app/Contents/MacOS/node-webkit Helper EH', '555');
     fs.chmodSync(path + 'Frameworks/node-webkit Helper NP.app/Contents/MacOS/node-webkit Helper NP', '555');
     fs.chmodSync(path + 'Frameworks/node-webkit Helper.app/Contents/MacOS/node-webkit Helper', '555');
@@ -265,7 +265,7 @@ module.exports = function (grunt) {
     concat([
       'buildTmp/nw.exe',
       'buildTmp/app.nw'
-    ], 'buildTmp/lomerge.exe', function () {
+    ], 'buildTmp/marge.exe', function () {
       var fs = require('fs');
       fs.unlink('buildTmp/app.nw', function (error, stdout, stderr) {
         if (stdout) {
@@ -325,21 +325,18 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('dist-linux', [
-    'jshint',
     'clean:distLinux64',
     'copy:appLinux',
     'createLinuxApp:Linux64'
   ]);
 
   grunt.registerTask('dist-linux32', [
-    'jshint',
     'clean:distLinux32',
     'copy:appLinux32',
     'createLinuxApp:Linux32'
   ]);
 
   grunt.registerTask('dist-win', [
-    'jshint',
     'clean:distWin',
     'copy:copyWinToTmp',
     'compress:appToTmp',
@@ -349,7 +346,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('dist-mac', [
-    'jshint',
     'clean:distMac64',
     'copy:webkit64',
     'copy:appMacos64',
@@ -358,7 +354,6 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('dist-mac32', [
-    'jshint',
     'clean:distMac32',
     'copy:webkit32',
     'copy:appMacos32',
@@ -372,7 +367,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('dmg', 'Create dmg from previously created app folder in dist.', function () {
     var done = this.async();
-    var createDmgCommand = 'resources/mac/package.sh "lomerge"';
+    var createDmgCommand = 'resources/mac/package.sh "marge"';
     require('child_process').exec(createDmgCommand, function (error, stdout, stderr) {
       var result = true;
       if (stdout) {
