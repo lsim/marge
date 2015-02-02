@@ -8,7 +8,10 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
       content: '='
 
     template: """
-        <div ui-ace="{onLoad: aceLoaded}" ng-model="content.text" class="full-height" />
+      <div class="full-height">
+        <div>{{content.title}}</div>
+        <div ui-ace="{onLoad: aceLoaded}" ng-model="content.text" class="full-height" ></div>
+      </div>
     """
     controller: ['$scope', ($scope) ->
 
@@ -20,10 +23,10 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
         $scope.markerIds = []
         $scope.content.highlights.forEach((highlight) ->
           range = new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd)
-          $scope.markerIds.push $scope.session.addMarker(range, 'ace_difference', 'text'))
+          $scope.markerIds.push $scope.session.addMarker(range, 'marge_difference', 'text'))
 
       updateMode = ->
-        return unless $scope.content?.highlights? and $scope.session?
+        return unless $scope.content? and $scope.session?
         $scope.session.setMode
           path: $scope.content.mode
 

@@ -23,8 +23,9 @@ req ['ace/ace'], () ->
     'app'
     'controllers/margeController'
     'directives/codePanel'
+    'nw/keybindings'
   ], (angular, app) ->
     angular.element(document).ready ->
-      $injector = angular.bootstrap(document, [app.name])
+      angular.bootstrap(document, [app.name])
 
 

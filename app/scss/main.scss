@@ -4,11 +4,21 @@
     display: inline-block;
   }
 
+  .diff-panel {
+    width: 33.33333%;
+    height: 50%;
+  }
+
+  .result-panel {
+    width: 100%;
+    height: 50%;
+  }
+
   .full-height {
     height: 100%;
   }
 
-  .ace_difference {
+  .marge_difference {
     background-color: yellow;
     position: absolute;
   }

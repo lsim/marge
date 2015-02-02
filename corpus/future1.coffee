@@ -4,4 +4,4 @@ define ['bar'], (bar) ->
     console.log 'bar', bar
 
   logSomethingElse: () ->
-    console.log 42
+    console.log 41
