@@ -2,7 +2,11 @@
   "name": "marge",
   "version": "0.0.0",
   "description": "",
-  "keywords": ["3-way","merge","diff"],
+  "keywords": [
+    "3-way",
+    "merge",
+    "diff"
+  ],
   "homepage": "https://github.com/lsim/marge",
   "bugs": "https://github.com/lsim/marge/issues",
   "author": {
@@ -15,7 +19,6 @@
     "url": "git://github.com/lsim/marge.git"
   },
   "devDependencies": {
-    "chokidar": "^0.12.6",
     "coffee-script": "^1.9.0",
     "concat-files": "~0.1.0",
     "grunt": "~0.4.5",
@@ -26,11 +29,13 @@
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-rename": "0.0.3",
     "gulp": "^3.8.10",
-    "gulp-chokidar": "0.0.3",
     "gulp-coffee": "^2.2.1",
     "gulp-sass": "^1.3.2",
+    "gulp-watch": "^4.1.0",
     "load-grunt-tasks": "^0.6.0",
-    "time-grunt": "^0.4.0"
+    "mkdirp": "^0.5.0",
+    "time-grunt": "^0.4.0",
+    "wget": "0.0.1"
   },
   "engines": {
     "node": ">=0.8.0"

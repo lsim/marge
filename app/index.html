@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="css/main.css" rel="stylesheet" />
 <style type="text/css">
-  .ng-cloak, [ng-cloak] { display:none; }
+  [ng-cloak] { display:none; }
 </style>
 
   <script type="text/javascript">
     if(process.env.PWD) { // When launched from the command line, we need to sort out the current working directory as a nw bug workaround
       process.chdir(process.env.PWD);
     }
-    process.on('uncaughtException', function(e) {
-      console.log(e);
-      process.exit(1);
-    });
+//    process.on('uncaughtException', function(e) {
+//      console.log("error:", e);
+//      process.exit(1);
+//    });
   </script>
 
 </head>

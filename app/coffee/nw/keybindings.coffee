@@ -12,13 +12,32 @@ define ['gui'], (gui) ->
 #  registerGlobalShortcutAction "Ctrl+r", "Reload", gui.Window.get().reloadDev
 #  registerGlobalShortcutAction "Ctrl+Shift+r", "Reload (no cache)", gui.Window.get().reloadIgnoringCache
 
-  nativeMenubar = new gui.Menu({ type: "menubar" })
-  nativeMenubar.createMacBuiltin("Marge", {hideWindow: true}) # TODO: osx specific
-  window.menu = nativeMenubar # TODO: osx specific
+  menus = {}
+  if window.menu
+    console.debug "There was already a menu with #menuitems", window.menu.items.length
+    nativeMenubar = window.menu
+    while nativeMenubar.items.length
+      nativeMenubar.removeAt(0)
+  else
+    console.debug "There was no menu - creating one"
+    nativeMenubar = new gui.Menu({ type: "menubar" })
 
-  menus =
-    file: nativeMenubar.items[0].submenu
-    edit: nativeMenubar.items[1].submenu
+  if process.platform is 'darwin'
+    nativeMenubar.createMacBuiltin("Marge", {hideWindow: true})
+    menus =
+      file: nativeMenubar.items[0].submenu
+      edit: nativeMenubar.items[1].submenu
+  else
+    menus =
+      file: new gui.Menu()
+      edit: new gui.Menu()
+    fileMenuItem = new gui.MenuItem({label: "File", submenu: menus.file})
+    editMenuItem = new gui.MenuItem({label: "Edit", submenu: menus.edit})
+
+    nativeMenubar.append(fileMenuItem)
+    nativeMenubar.append(editMenuItem)
+
+  window.menu = nativeMenubar
 
   addMenuItem = (label, handler, menuId, key, modifiers) ->
     menuItem = new gui.MenuItem
@@ -26,13 +45,21 @@ define ['gui'], (gui) ->
       click: handler
       key: key
       modifiers: modifiers
-    if not menus[menuId]
+    if menus?[menuId]
+      menus?[menuId]?.append(menuItem)
+    else
       console.error "Cannot add menu item #{label} to menu with id #{menuId} because that menu doesn't exist"
-    menus[menuId]?.append(menuItem)
 
-  addMenuItem("Refresh+", (-> window.reloadDev()), "file", "r", "cmd-shift") # TODO: osx specific
-  addMenuItem("Refresh", (-> window.reload()), "file", "r", "cmd") # TODO: osx specific
-  addMenuItem("Debug", (-> window.showDevTools()), "file", "c", "cmd-alt") # TODO: osx specific
+  platformModifier = if process.platform is "darwin" then "cmd" else "ctrl"
+
+  addMenuItem("Refresh+", (-> window.reloadDev()), "file", "r", "#{platformModifier}-shift")
+  addMenuItem("Refresh", (-> window.reload()), "file", "r", "#{platformModifier}")
+  addMenuItem("Debug", (-> window.showDevTools()), "file", "c", "#{platformModifier}-alt")
 
   # return
-  {registerGlobalShortcutAction, addMenuItem}
+  {
+    registerGlobalShortcutAction
+    addMenuItem
+    getPlatformModifer: () -> platformModifier
+  }
+

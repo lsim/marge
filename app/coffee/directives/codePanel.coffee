@@ -1,6 +1,6 @@
 define ['app', 'ace/ace', '_'], (app, ace, _) ->
 
-  Range = ace.require('ace/range').Range
+  Range = ace.require('ace/range').Range 
 
   app.directive 'codePanel', ->
     restrict: 'AC'
@@ -27,8 +27,9 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
 
       updateMode = ->
         return unless $scope.content? and $scope.session?
-        $scope.session.setMode
-          path: $scope.content.mode
+        if $scope.content.mode
+          $scope.session.setMode
+            path: $scope.content.mode
 
       $scope.$watch "content.highlights", updateHighlights
 

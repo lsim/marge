@@ -1,5 +1,4 @@
 #!/bin/bash
-# txt
-#nodewebkit app ../corpus/original.txt ../corpus/future1.txt ../corpus/future2.txt
-# html
+
+#nodewebkit app corpus/original.coffee corpus/future1.coffee corpus/future2.coffee
 nodewebkit app coffee/controllers/margeController.coffee coffee/controllers/margeController.coffee coffee/controllers/margeController.coffee
