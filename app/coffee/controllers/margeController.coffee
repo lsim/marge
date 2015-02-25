@@ -10,6 +10,9 @@ define ['app', 'gui', '_',
 
   app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc, highlightsvc) ->
 
+    $scope.editorSettings =
+      theme: "monokai"
+
     argv = minimist(gui.App.argv)
     if argv._.length >= 3
       filePaths = _.takeRight(argv._, 3) # Take the last three arguments
@@ -28,7 +31,7 @@ define ['app', 'gui', '_',
         text: "invoke with three file paths (base, v1, v2) as arguments" # Find better way of displaying this
         title: "Error"
     $scope.matchThresholdString = diffsvc.dmp.Match_Threshold
-    $scope.v1First = true
+    $scope.patchV1 = true
 
     ###
       3-way merge pseudocode:
@@ -43,10 +46,20 @@ define ['app', 'gui', '_',
     ###
     threeWayMerge = (v0, v1, v2) ->
       dmp = diffsvc.dmp
-#      dmp.Match_Threshold = 0.1
-      patches = dmp.patch_make(v0, v2)
-      [resultText, status] = dmp.patch_apply(patches, v1)
-      console.debug "3way", resultText, status, patches
+      # character level merge
+#      patches = dmp.patch_make(v0, v2) # character
+#      [resultText, status] = dmp.patch_apply(patches, v1)
+#      console.debug "3way", resultText, status, patches
+#      return [resultText, status]
+
+      # line level merge
+      console.debug "diff_linesToChars_1", a = dmp.diff_linesToChars_(v0, v2)
+      console.debug "diff_linesToChars_2", diffs = dmp.diff_main(a.chars1, a.chars2, false)
+#      console.debug "diff_linesToChars_3", dmp.diff_charsToLines_(diffs, a.lineArray), diffs
+
+      console.debug "line_mode_patch", line_patches = dmp.patch_make(a.chars2, diffs)
+      console.debug "line_mode_merge"
+      [resultText, status] = dmp.patch_apply(line_patches, v1)
       [resultText, status]
 
     updateDiffs = _.debounce( ->
@@ -61,23 +74,24 @@ define ['app', 'gui', '_',
       $scope.$apply()
     , 20)
 
+    #TODO: get rid of this since those panels will be read only - or make it a configuration option to have them editable
     $scope.$watch "baseContent.text + v1Content.text + v2Content.text", ->
       updateDiffs()
       updateThreewayMerge()
 
     updateThreewayMerge = _.debounce(->
-      return unless $scope.matchThresholdString? and $scope.v1First? and $scope.baseContent? and $scope.v1Content? and $scope.v2Content?
+      return unless $scope.matchThresholdString? and $scope.patchV1? and $scope.baseContent? and $scope.v1Content? and $scope.v2Content?
       matchThreshold = parseFloat($scope.matchThresholdString)
       diffsvc.dmp.Match_Threshold = matchThreshold
-      v1First = $scope.v1First
-      if v1First
+      patchV1 = $scope.patchV1
+      if patchV1
         [merged, result] = threeWayMerge($scope.baseContent.text, $scope.v1Content.text, $scope.v2Content.text)
       else
         [merged, result] = threeWayMerge($scope.baseContent.text, $scope.v2Content.text, $scope.v1Content.text)
       $scope.resultContent =
         text: merged
         mode: $scope.v1Content.mode
-        title: "Result #{matchThreshold}|#{if v1First then "v1->v2" else "v2->v1"}|#{result.join(",")}"
+        title: "Result #{matchThreshold}|#{if patchV1 then "v2->v1" else "v1->v2"}|#{result.join(",")}"
       $scope.$apply()
     , 20)
 
@@ -85,6 +99,6 @@ define ['app', 'gui', '_',
       updateThreewayMerge()
       updateDiffs()
 
-    $scope.$watch 'v1First', ->
+    $scope.$watch 'patchV1', ->
       updateThreewayMerge()
       updateDiffs()
