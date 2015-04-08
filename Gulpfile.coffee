@@ -43,7 +43,7 @@ copyLibs = ->
 #gulp.task 'copy-libs', copyLibs
 
 trace = (taskName, stream) ->
-  gutil.log "started #{taskName}"
+  gutil.log "Started #{taskName}"
   stream.on 'end', ->
     gutil.log "Finished #{taskName}"
   stream.on 'error', (err) ->
@@ -76,7 +76,7 @@ gulp.task 'watch', ['build'], ->
   watch("app/coffee/**/*.coffee", createEventLogger(compileCoffee))
   watch("app/scss/**/*.scss", createEventLogger(compileSass))
   watch(["app/html/**/*.html"], createEventLogger(copyResources))
-  watch("app/lib/**", () -> createEventLogger(copyLibs))
+  watch("app/lib/**", createEventLogger(copyLibs))
 
 cleanBinFolder = (cb) ->
   rimraf('./app/bin', cb)
