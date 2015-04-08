@@ -5,4 +5,5 @@ LOG_FILE="${SCRIPT_DIR}/marge.log"
 
 echo "arguments: ${@:1}" >> "$LOG_FILE" 2>&1
 
-${SCRIPT_DIR}/../dist/MacOS64/marge.app/Contents/MacOS/node-webkit "${SCRIPT_DIR}/../dist/MacOS64/marge.app/Contents/Resources/app.nw" "${@:1}" >> "$LOG_FILE" 2>&1
+#${SCRIPT_DIR}/../dist/MacOS64/marge.app/Contents/MacOS/node-webkit "${SCRIPT_DIR}/../dist/MacOS64/marge.app/Contents/Resources/app.nw" "${@:1}" >> "$LOG_FILE" 2>&1
+open -W ${SCRIPT_DIR}/../dist/app/marge.app --args "${@:1}"

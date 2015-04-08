@@ -1,16 +1,18 @@
-define ['app', 'gui', '_',
+define ['app', '_',
         'services/file',
         'services/diff',
         'services/aceMode',
         'services/highlight'
-], (app, gui, _) ->
+], (app, _) ->
   minimist = require('minimist')
+  mainProcess = require('remote').process
+  path = require('path')
 
   # This is the outermost controller of the application. It parses command line arguments etc
 
   app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc, highlightsvc) ->
-
-    argv = minimist(gui.App.argv)
+    console.debug "command line arguments", mainProcess.argv
+    argv = minimist(mainProcess.argv)
     if argv._.length >= 3
       filePaths = _.takeRight(argv._, 3) # Take the last three arguments
       loadPath = (panelName, path) ->

@@ -1,4 +1,4 @@
-define ['app', 'ace/ace'], (app, ace) ->
+define ['app', 'ace/ace'], (app) ->
   fs = require('fs')
   path = require('path')
 
@@ -6,7 +6,7 @@ define ['app', 'ace/ace'], (app, ace) ->
     (filePath) ->
       deferred = $q.defer()
       absPath = path.resolve(filePath)
-      console.debug "resolved file path ", absPath, filePath
+      console.debug "resolved file path", absPath, filePath
       fs.readFile absPath, { encoding: 'utf8' }, (err, contents) ->
         if(err)
           deferred.reject(err.message)

@@ -1,11 +1,11 @@
 # Set up requirejs
 requirejs.config(
-  baseUrl: 'js'
+  baseUrl: '../'
   paths:
-    angular: '../lib/angular.min'
-    ace: '../lib/ace'
-    'ui-ace': '../lib/ui-ace.min'
-    _: '../lib/lodash.min'
+    angular: 'lib/angular.min'
+    ace: 'lib/ace'
+    'ui-ace': 'lib/ui-ace.min'
+    _: 'lib/lodash.min'
 
   shim:
     _: { exports: '_' }
@@ -16,14 +16,14 @@ requirejs.config(
 )
 
 # The ace plugins assume (when in no-conflict mode) that ace is on window when they are loaded. So we load ace first of all.
-req ['ace/ace'], () ->
+req ['ace/ace', 'log'], () ->
 
   req [
     'angular'
     'app'
     'controllers/margeController'
     'directives/codePanel'
-    'nw/keybindings'
+#    'nw/keybindings'
   ], (angular, app) ->
     angular.element(document).ready ->
       angular.bootstrap(document, [app.name])
