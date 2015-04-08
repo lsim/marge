@@ -1,5 +1,10 @@
 define [], ->
 
+  remote = require 'remote'
+  Menu = remote.require 'menu'
+  #  MenuItem = remote.require 'menu-item'
+  app = remote.require 'app'
+
   template = [
     {
       label: 'Atom Shell',
@@ -127,10 +132,6 @@ define [], ->
       submenu: []
     },
   ]
-
-  remote = require 'remote'
-  Menu = remote.require 'menu'
-  #  MenuItem = remote.require 'menu-item'
 
   menu = Menu.buildFromTemplate(template)
 
