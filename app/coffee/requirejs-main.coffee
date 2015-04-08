@@ -23,6 +23,7 @@ req ['ace/ace', 'log'], () ->
     'app'
     'controllers/margeController'
     'directives/codePanel'
+    'menu/mainMenu'
 #    'nw/keybindings'
   ], (angular, app) ->
     angular.element(document).ready ->
