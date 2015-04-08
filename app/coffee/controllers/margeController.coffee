@@ -19,7 +19,8 @@ define ['app', '_',
           $scope[panelName + 'Content'] =
             text: contents
             mode: aceModeSvc(path)
-            title: "#{panelName}: #{path}"
+            path: path
+            name: panelName
         , (err) -> console.error "Failed loading file", err)
       loadPath('base', filePaths[0])
       loadPath('v1', filePaths[1])
@@ -27,7 +28,7 @@ define ['app', '_',
     else
       $scope.baseContent =
         text: "invoke with three file paths (base, v1, v2) as arguments" # Find better way of displaying this
-        title: "Error"
+        name: "Error"
     $scope.matchThresholdString = diffsvc.dmp.Match_Threshold
     $scope.v1First = true
 
@@ -81,7 +82,8 @@ define ['app', '_',
       $scope.resultContent =
         text: merged
         mode: $scope.v1Content.mode
-        title: "Result #{matchThreshold}|#{if v1First then "v1->v2" else "v2->v1"}|#{result.join(",")}"
+        name: "Result"
+        path: "#{matchThreshold}|#{if v1First then "v1->v2" else "v2->v1"}|#{result.join(",")}"
       $scope.$apply()
     , 20)
 
@@ -92,3 +94,10 @@ define ['app', '_',
     $scope.$watch 'v1First', ->
       updateThreewayMerge()
       updateDiffs()
+
+    $scope.themeStyle = { backgroundColor: 'white', color: 'black' }
+    $scope.$on 'marge:theme-style-change', (event, style) ->
+      if $scope.themeStyle.backgroundColor == style.backgroundColor and $scope.themeStyle.color == style.color
+        return
+      $scope.themeStyle.backgroundColor = style.backgroundColor
+      $scope.themeStyle.color = style.color

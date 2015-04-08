@@ -3,15 +3,15 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
   Range = ace.require('ace/range').Range
 
   app.directive 'codePanel', ->
-    restrict: 'AC'
+    restrict: 'A'
     scope:
       content: '='
       editorSettings: '='
 
     template: """
-      <div class="full-height">
-        <div>{{content.title}}</div>
-        <div ui-ace="{onLoad: aceLoaded}" ng-model="content.text" class="full-height" ></div>
+      <div class="code-panel">
+        <div class="code-panel-header" title="{{content.path}}">{{content.name}}: {{content.path}}</div>
+        <div ui-ace="{onLoad: aceLoaded}" ng-model="content.text" class="ace-component" ></div>
       </div>
     """
     controller: ['$scope', ($scope) ->
@@ -35,7 +35,11 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
 
       updateTheme = ->
         return unless $scope.editorSettings?.theme? and $scope.editor?
-        $scope.editor.setTheme("ace/theme/#{$scope.editorSettings.theme}")
+        $scope.editor.setTheme("ace/theme/#{$scope.editorSettings.theme}", ->
+          computedStyle = getComputedStyle($scope.editor.renderer.scroller)
+          $scope.$emit "marge:theme-style-change", computedStyle
+        )
+
 
       $scope.$watch "content.highlights", updateHighlights
 

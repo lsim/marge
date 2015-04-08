@@ -1,12 +1,37 @@
 
+body {
+  margin: 0;
+}
+
 #frame {
-  .inline {
-    display: inline-block;
-  }
+  height: 100vh;
+  position: relative;
+//  overflow-y: hidden;
 
   .diff-panel {
+    display: inline-block;
     width: 33.33333%;
     height: 50%;
+  }
+
+  .code-panel {
+    height: 100%;
+    position: relative;
+
+    .code-panel-header {
+      padding: 0 2px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+    }
+
+    .ace-component {
+      position: absolute;
+      top: 2em;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
   }
 
   .result-panel {
@@ -14,13 +39,34 @@
     height: 50%;
   }
 
-  .full-height {
-    height: 100%;
-  }
-
   .marge_difference {
-    background-color: yellow;
+    background-color: #555500;
     position: absolute;
   }
 
+}
+
+$cp-height: 30px;
+
+#control-panel {
+  position: absolute;
+  top: 0;
+  height: 0;
+  display: none;
+  .cp-visible {
+    height: $cp-height;
+    display: block;
+  }
+}
+
+#merge-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .cp-visible {
+    top: $cp-height;
+  }
 }
