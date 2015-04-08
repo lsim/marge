@@ -1,5 +1,3 @@
-
-
 gulp = require 'gulp'
 watch = require('gulp-watch')
 coffee = require 'gulp-coffee'
@@ -72,7 +70,6 @@ gulp.task 'clean-dist', (cb) ->
 
 atomshell = require('gulp-atom-shell')
 gulp.task 'dist-mac', ['build','clean-dist'], ->
-
   gulp.src(['app/**', '!app/{coffee,scss,lib,html,bower_components}' ])
   .pipe(handle(atomshell(
       version: '0.22.3'
