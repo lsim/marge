@@ -1,7 +1,8 @@
 gulp = require 'gulp'
-watch = require('gulp-watch')
+watch = require 'gulp-watch'
 coffee = require 'gulp-coffee'
 sass = require 'gulp-sass'
+gutil = require 'gulp-util'
 
 wget = require 'wget'
 mkdirp = require 'mkdirp'
@@ -11,38 +12,77 @@ rimraf = require 'rimraf'
 spawn = require('child_process').spawn
 
 handle = (stream)->
-  stream.on 'error', ->
-    console.log.apply this, arguments
+  stream.on 'error', (args...) ->
+    gutil.log(args...)
     stream.end()
 
-gulp.task 'compile-coffee', ->
-  gulp.src('./app/coffee/**/*.coffee')
-  .pipe(handle(coffee()))
-  .pipe(gulp.dest('app/bin'))
+compileCoffee = ->
+  trace "building coffee..",
+    gulp.src('./app/coffee/**/*.coffee')
+    .pipe(handle(coffee()))
+    .pipe(gulp.dest('app/bin'))
+#gulp.task 'compile-coffee', compileCoffee
 
-gulp.task 'compile-sass', ->
-  gulp.src('./app/scss/**/*.scss')
-  .pipe(handle(sass()))
-  .pipe(gulp.dest('app/bin/css'))
+compileSass = ->
+  trace "building scss..",
+    gulp.src('./app/scss/**/*.scss')
+    .pipe(handle(sass()))
+    .pipe(gulp.dest('app/bin/css'))
+#gulp.task 'compile-sass', compileSass
 
-gulp.task 'copy-resources', ->
-  gulp.src(['./app/html/**/*.html'])
-  .pipe(gulp.dest('app/bin/html'))
+copyResources = ->
+  trace "copying resources..",
+    gulp.src(['./app/html/**/*.html'])
+    .pipe(gulp.dest('app/bin/html'))
+#gulp.task 'copy-resources', copyResources
 
-gulp.task 'copy-libs', ->
-  gulp.src('./app/lib/**')
-  .pipe(gulp.dest('app/bin/lib'))
+copyLibs = ->
+  trace "copying libs..",
+    gulp.src('./app/lib/**')
+    .pipe(gulp.dest('app/bin/lib'))
+#gulp.task 'copy-libs', copyLibs
+
+trace = (taskName, stream) ->
+  gutil.log "started #{taskName}"
+  stream.on 'end', ->
+    gutil.log "Finished #{taskName}"
+  stream.on 'error', (err) ->
+    gutil.log "Error #{taskName}: #{err}"
+  # return
+  stream
+
+merge = require('merge-stream')
+doBuild = ->
+  trace("doing full build",
+    merge(
+      compileCoffee(),
+      compileSass(),
+      copyResources(),
+      copyLibs()
+    )
+  )
 
 gulp.task 'watch', ['build'], ->
-  watch("app/coffee/**/*.coffee", () -> gulp.start('compile-coffee'))
-  watch("app/scss/**/*.scss", () -> gulp.start('compile-sass'))
-  watch(["app/**/*.html", "!app/bin/**"], () -> gulp.start('copy-resources'))
-  watch("app/lib/**", () -> gulp.start('copy-libs'))
+  createEventLogger = (callback) ->
+    (event) ->
+      gutil.log("Watcher: #{event.path} #{event.event}!")
+      if event.event is 'unlink' # on delete, we do a clean + build of everything
+        cleanBinFolder(->
+          doBuild()
+        )
+      else
+        callback(event)
 
-gulp.task 'clean', (cb) ->
-  rimraf './app/bin', cb
+  watch("app/coffee/**/*.coffee", createEventLogger(compileCoffee))
+  watch("app/scss/**/*.scss", createEventLogger(compileSass))
+  watch(["app/html/**/*.html"], createEventLogger(copyResources))
+  watch("app/lib/**", () -> createEventLogger(copyLibs))
 
-gulp.task 'build', ['compile-coffee', 'compile-sass', 'copy-resources', 'copy-libs'], ->
+cleanBinFolder = (cb) ->
+  rimraf('./app/bin', cb)
+
+gulp.task 'clean', (cb) -> cleanBinFolder(cb)
+gulp.task 'build', doBuild
 gulp.task 'default', ['watch'], ->
 
 downloadAtomShell = require 'gulp-download-atom-shell'
@@ -54,9 +94,9 @@ gulp.task 'getatomshell', (cb) ->
 
 runShellCmd = (cmd, args...) ->
   proc = spawn cmd, args
-  proc.stdout.on 'data', (data) -> console.log("#{cmd} stdout: " + data)
-  proc.stderr.on 'data', (data) -> console.log("#{cmd} stderr: " + data)
-  proc.on 'close', (code) -> console.log "#{cmd} exited with code #{code}"
+  proc.stdout.on 'data', (data) -> gutil.log("#{cmd} stdout: " + data)
+  proc.stderr.on 'data', (data) -> gutil.log("#{cmd} stderr: " + data)
+  proc.on 'close', (code) -> gutil.log "#{cmd} exited with code #{code}"
 
 gulp.task 'demo-mac', ['build'], ->
   runShellCmd 'binaries/Atom.app/Contents/MacOS/Atom', 'app', 'corpus/original.coffee', 'corpus/future1.coffee', 'corpus/future2.coffee'
