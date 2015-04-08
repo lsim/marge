@@ -6,11 +6,10 @@ define ['app', '_',
 ], (app, _) ->
   minimist = require('minimist')
   mainProcess = require('remote').process
-  path = require('path')
 
   # This is the outermost controller of the application. It parses command line arguments etc
 
-  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModesvc, highlightsvc) ->
+  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModeSvc, highlightsvc) ->
     console.debug "command line arguments", mainProcess.argv
     argv = minimist(mainProcess.argv)
     if argv._.length >= 3
@@ -19,7 +18,7 @@ define ['app', '_',
         filesvc(path).then((contents) ->
           $scope[panelName + 'Content'] =
             text: contents
-            mode: aceModesvc(path)
+            mode: aceModeSvc(path)
             title: "#{panelName}: #{path}"
         , (err) -> console.error "Failed loading file", err)
       loadPath('base', filePaths[0])
