@@ -6,7 +6,7 @@ SUBJECTEXTENSION="coffee"
 SUBJECTPATH="./app/coffee/controllers/margeController.${SUBJECTEXTENSION}"
 OTHERBRANCH="develop"
 
-OUTPUTFOLDER="${SCRIPT_DIR}/../corpus/test"
+OUTPUTFOLDER="corpus/test"
 ORIGINAL="${OUTPUTFOLDER}/original.${SUBJECTEXTENSION}"
 FUTURE1="${OUTPUTFOLDER}/future1.${SUBJECTEXTENSION}"
 FUTURE2="${OUTPUTFOLDER}/future2.${SUBJECTEXTENSION}"
@@ -23,4 +23,4 @@ cat "$SUBJECTPATH" > "$FUTURE2"
 
 ATOMPATH="${SCRIPT_DIR}/../binaries/Atom.app/Contents/MacOS/Atom"
 
-"$(${ATOMPATH} app ${ORIGINAL} ${FUTURE1} ${FUTURE2})"
+${ATOMPATH} app "${ORIGINAL}" "${FUTURE1}" "${FUTURE2}"
