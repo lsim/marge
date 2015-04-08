@@ -1,11 +1,12 @@
 define ['app', 'ace/ace', '_'], (app, ace, _) ->
 
-  Range = ace.require('ace/range').Range 
+  Range = ace.require('ace/range').Range
 
   app.directive 'codePanel', ->
     restrict: 'AC'
     scope:
       content: '='
+      editorSettings: '='
 
     template: """
       <div class="full-height">
@@ -24,6 +25,7 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
         $scope.content.highlights.forEach((highlight) ->
           range = new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd)
           $scope.markerIds.push $scope.session.addMarker(range, 'marge_difference', 'text'))
+        $scope.session.addGutterDecoration(2, 'marge-gutter')
 
       updateMode = ->
         return unless $scope.content? and $scope.session?
@@ -31,13 +33,21 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
           $scope.session.setMode
             path: $scope.content.mode
 
+      updateTheme = ->
+        return unless $scope.editorSettings?.theme? and $scope.editor?
+        $scope.editor.setTheme("ace/theme/#{$scope.editorSettings.theme}")
+
       $scope.$watch "content.highlights", updateHighlights
 
       $scope.$watch "content.mode", updateMode
 
+      $scope.$watch "editorSettings.theme", updateTheme
+
       $scope.aceLoaded = (editor) ->
         $scope.session = editor.session
+        $scope.editor = editor
         updateHighlights()
         updateMode()
+        updateTheme()
     ]
 #    link: ($scope, $element, $attrs) ->

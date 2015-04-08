@@ -22,12 +22,11 @@
 <body ng-cloak>
   <div id="frame" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0;" ng-controller="margeController">
     <div style="position:relative;" class="full-height">
-      <input type="number" step="0.1" min="0" max="1" ng-model="matchThresholdString" /> v1First: <input type="checkbox" ng-model="v1First" /> <div class="full-height"><!--
-     --><div class="inline diff-panel" code-panel content="baseContent"></div><!--
-     --><div class="inline diff-panel" code-panel content="v1Content"></div><!--
-     --><div class="inline diff-panel" code-panel content="v2Content"></div><!--
-     --><div class="result-panel" code-panel content="resultContent"></div>
-      </div>
+      <input type="number" step="0.1" min="0" max="1" ng-model="matchThresholdString" /> v1First: <input type="checkbox" ng-model="v1First" /><div class="full-height"><!--
+     --><div class="inline diff-panel" code-panel content="baseContent" editor-settings="editorSettings"></div><!--
+     --><div class="inline diff-panel" code-panel content="v1Content" editor-settings="editorSettings"></div><!--
+     --><div class="inline diff-panel" code-panel content="v2Content" editor-settings="editorSettings"></div><!--
+     --><div class="result-panel" code-panel content="resultContent" editor-settings="editorSettings"></div></div>
     </div>
   </div>
 </body>

@@ -31,6 +31,9 @@ define ['app', '_',
     $scope.matchThresholdString = diffsvc.dmp.Match_Threshold
     $scope.v1First = true
 
+    $scope.editorSettings =
+      theme: "monokai"
+
     ###
       3-way merge pseudocode:
       patches = patch_make(V0, V2)
