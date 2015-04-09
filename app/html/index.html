@@ -25,10 +25,15 @@
       <input type="number" step="0.1" min="0" max="1" ng-model="matchThresholdString" /> v1First: <input type="checkbox" ng-model="v1First" />
     </div>
     <div id="merge-container" ng-class="{'cp-visible': showControlPanel}">
-        <div class="diff-panel" code-panel content="baseContent" editor-settings="editorSettings"></div><!--
-     --><div class="diff-panel" code-panel content="v1Content" editor-settings="editorSettings"></div><!--
-     --><div class="diff-panel" code-panel content="v2Content" editor-settings="editorSettings"></div><!--
-     --><div class="result-panel" code-panel content="resultContent" editor-settings="editorSettings"></div>
+      <div class="input-section">
+        <div class="diff-panel" code-panel content="baseContent" editor-settings="editorSettings"></div>
+        <div class="diff-panel" code-panel content="v1Content" editor-settings="editorSettings"></div>
+        <div class="diff-panel" code-panel content="v2Content" editor-settings="editorSettings"></div>
+      </div>
+      <div class="output-section">
+        <div class="result-panel" code-panel content="resultContent" editor-settings="editorSettings">
+      </div>
+    </div>
     </div>
   </div>
 </body>

@@ -6,12 +6,22 @@ body {
 #frame {
   height: 100vh;
   position: relative;
-//  overflow-y: hidden;
+  overflow-y: hidden;
 
-  .diff-panel {
-    display: inline-block;
-    width: 33.33333%;
+  .input-section {
     height: 50%;
+    .diff-panel {
+      float: left;
+      width: 33.33%;
+      height: 100%;
+    }
+  }
+
+  .output-section {
+    height: 50%;
+    .result-panel {
+      height: 100%;
+    }
   }
 
   .code-panel {
@@ -34,11 +44,6 @@ body {
     }
   }
 
-  .result-panel {
-    width: 100%;
-    height: 50%;
-  }
-
   .marge_difference {
     background-color: #555500;
     position: absolute;
@@ -47,15 +52,14 @@ body {
 }
 
 $cp-height: 30px;
-
+$cpTransition: bottom 0.3s;
 #control-panel {
   position: absolute;
-  top: 0;
-  height: 0;
-  display: none;
-  .cp-visible {
-    height: $cp-height;
-    display: block;
+  bottom: -$cp-height;
+  transition: $cpTransition;
+
+  &.cp-visible {
+    bottom: 0;
   }
 }
 
@@ -65,8 +69,9 @@ $cp-height: 30px;
   bottom: 0;
   left: 0;
   right: 0;
+  transition: $cpTransition;
 
-  .cp-visible {
-    top: $cp-height;
+  &.cp-visible {
+    bottom: $cp-height;
   }
 }

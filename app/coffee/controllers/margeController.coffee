@@ -1,9 +1,9 @@
-define ['app', '_',
+define ['app', '_', 'menu/mainMenu',
         'services/file',
         'services/diff',
         'services/aceMode',
         'services/highlight'
-], (app, _) ->
+], (app, _, menu) ->
   minimist = require('minimist')
   mainProcess = require('remote').process
 
@@ -51,7 +51,7 @@ define ['app', '_',
 #      dmp.Match_Threshold = 0.1
       patches = dmp.patch_make(v0, v2)
       [resultText, status] = dmp.patch_apply(patches, v1)
-      console.debug "3way", resultText, status, patches
+#      console.debug "3way", resultText, status, patches
       [resultText, status]
 
     updateDiffs = _.debounce( ->
@@ -101,3 +101,7 @@ define ['app', '_',
         return
       $scope.themeStyle.backgroundColor = style.backgroundColor
       $scope.themeStyle.color = style.color
+
+    menu.on 'controlPanelToggled', ->
+      $scope.showControlPanel = !$scope.showControlPanel
+      $scope.$digest()

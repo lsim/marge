@@ -2,6 +2,7 @@ define [], ->
 
   remote = require 'remote'
   Menu = remote.require 'menu'
+  BrowserWindow = remote.require 'browser-window'
   #  MenuItem = remote.require 'menu-item'
   app = remote.require 'app'
 
@@ -10,7 +11,7 @@ define [], ->
       label: 'Atom Shell',
       submenu: [
         {
-          label: 'About Atom Shell',
+          label: 'About Marge',
           selector: 'orderFrontStandardAboutPanel:'
         },
         {
@@ -24,7 +25,7 @@ define [], ->
           type: 'separator'
         },
         {
-          label: 'Hide Atom Shell',
+          label: 'Hide Marge',
           accelerator: 'Command+H',
           selector: 'hide:'
         },
@@ -43,7 +44,7 @@ define [], ->
         {
           label: 'Quit',
           accelerator: 'Command+Q',
-          click: (() -> app.quit())
+          click: () -> app.quit()
         },
       ]
     },
@@ -101,7 +102,7 @@ define [], ->
         {
           label: 'Toggle Controls',
           accelerator: 'Alt+Command+C',
-          click: () -> console.debug "toggle!"
+          click: () -> eventEmitter.emit 'controlPanelToggled'
         }
       ]
     },
@@ -136,3 +137,8 @@ define [], ->
   menu = Menu.buildFromTemplate(template)
 
   Menu.setApplicationMenu(menu)
+
+  EventEmitter = require('events').EventEmitter
+  eventEmitter = new EventEmitter()
+  # return
+  eventEmitter
