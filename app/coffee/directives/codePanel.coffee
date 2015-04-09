@@ -16,16 +16,16 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
     """
     controller: ['$scope', ($scope) ->
 
+      markerIds = []
       updateHighlights = ->
         return unless $scope.content?.highlights? and $scope.session?
-        if $scope.markerIds
-          _.each $scope.markerIds, (markerId) ->
-            $scope.session.removeMarker(markerId)
-        $scope.markerIds = []
+        _.each markerIds, (markerId) ->
+          $scope.session.removeMarker(markerId)
+        markerIds = []
         $scope.content.highlights.forEach((highlight) ->
           range = new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd)
-          $scope.markerIds.push $scope.session.addMarker(range, 'marge_difference', 'text'))
-        $scope.session.addGutterDecoration(2, 'marge-gutter')
+          markerIds.push $scope.session.addMarker(range, 'marge_difference', 'text'))
+#        $scope.session.addGutterDecoration(2, 'marge-conflict-gutter') # Use something like this to place a conflict glyph in the gutter on appropriate lines
 
       updateMode = ->
         return unless $scope.content? and $scope.session?
@@ -50,6 +50,7 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
       $scope.aceLoaded = (editor) ->
         $scope.session = editor.session
         $scope.editor = editor
+        $scope.editor.renderer.setShowInvisibles(true)
         updateHighlights()
         updateMode()
         updateTheme()
