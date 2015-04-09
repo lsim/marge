@@ -26,12 +26,12 @@
     </div>
     <div id="merge-container" ng-class="{'cp-visible': showControlPanel}">
       <div class="input-section">
-        <div class="diff-panel" code-panel content="baseContent" editor-settings="editorSettings"></div>
-        <div class="diff-panel" code-panel content="v1Content" editor-settings="editorSettings"></div>
-        <div class="diff-panel" code-panel content="v2Content" editor-settings="editorSettings"></div>
+        <div class="diff-panel" code-panel content="baseContent" editor-settings="editorSettings" scroll-model="scrollModel"></div>
+        <div class="diff-panel" code-panel content="v1Content" editor-settings="editorSettings" scroll-model="scrollModel"></div>
+        <div class="diff-panel" code-panel content="v2Content" editor-settings="editorSettings" scroll-model="scrollModel"></div>
       </div>
       <div class="output-section">
-        <div class="result-panel" code-panel content="resultContent" editor-settings="editorSettings">
+        <div class="result-panel" code-panel content="resultContent" editor-settings="editorSettings" >
       </div>
     </div>
     </div>

@@ -35,6 +35,10 @@ define ['app', '_', 'menu/mainMenu',
     $scope.editorSettings =
       theme: "monokai"
 
+    $scope.scrollModel =
+      top: 0
+      left: 0
+
     ###
       3-way merge pseudocode:
       patches = patch_make(V0, V2)
@@ -101,6 +105,11 @@ define ['app', '_', 'menu/mainMenu',
         return
       $scope.themeStyle.backgroundColor = style.backgroundColor
       $scope.themeStyle.color = style.color
+
+    $scope.$on 'marge:scrollLeftChange', (event, newValue) ->
+      $scope.scrollModel.left = newValue
+    $scope.$on 'marge:scrollTopChange', (event, newValue) ->
+      $scope.scrollModel.top = newValue
 
     menu.on 'controlPanelToggled', ->
       $scope.showControlPanel = !$scope.showControlPanel

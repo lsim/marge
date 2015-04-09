@@ -7,6 +7,7 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
     scope:
       content: '='
       editorSettings: '='
+      scrollModel: '='
 
     template: """
       <div class="code-panel">
@@ -40,6 +41,12 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
           $scope.$emit "marge:theme-style-change", computedStyle
         )
 
+      updateScroll = ->
+        return unless $scope.session? and $scope.scrollModel?
+        if $scope.scrollModel? and $scope.session.getScrollTop() isnt $scope.scrollModel.top
+          $scope.session.setScrollTop($scope.scrollModel.top)
+        if $scope.scrollModel? and $scope.session.getScrollLeft() isnt $scope.scrollModel.left
+          $scope.session.setScrollLeft($scope.scrollModel.left)
 
       $scope.$watch "content.highlights", updateHighlights
 
@@ -47,11 +54,31 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
 
       $scope.$watch "editorSettings.theme", updateTheme
 
+      $scope.$watch "scrollModel.top", updateScroll
+      $scope.$watch "scrollModel.left", updateScroll
+
       $scope.aceLoaded = (editor) ->
         $scope.session = editor.session
         $scope.editor = editor
+        editor.renderer.setAnimatedScroll(true)
         updateHighlights()
         updateMode()
         updateTheme()
+
+        editor.session.on 'changeScrollTop', _.debounce(() ->
+          return unless $scope.scrollModel?
+          return if $scope.scrollModel? and editor.session.getScrollTop() is $scope.scrollModel.top
+          console.debug "#{$scope.content.name} changeScrollTop fired", editor.session.getScrollTop()
+          $scope.$emit('marge:scrollTopChange', editor.session.getScrollTop())
+          $scope.$apply()
+        , 500)
+        editor.session.on 'changeScrollLeft', _.debounce(() ->
+          return unless $scope.scrollModel?
+          return if $scope.scrollModel? and editor.session.getScrollLeft() is $scope.scrollModel.left
+          console.debug "#{$scope.content.name} changeScrollLeft fired", editor.session.getScrollLeft()
+          $scope.$emit('marge:scrollLeftChange', editor.session.getScrollLeft())
+          $scope.$apply()
+        , 500)
+
     ]
 #    link: ($scope, $element, $attrs) ->
