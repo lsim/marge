@@ -14,17 +14,17 @@ define ['app', '_', 'menu/mainMenu',
     argv = minimist(mainProcess.argv)
     if argv._.length >= 3
       filePaths = _.takeRight(argv._, 3) # Take the last three arguments
-      loadPath = (panelName, path) ->
+      loadPath = (panelName, path, displayName) ->
         filesvc(path).then((contents) ->
           $scope[panelName + 'Content'] =
             text: contents
             mode: aceModeSvc(path)
             path: path
-            name: panelName
+            name: displayName
         , (err) -> console.error "Failed loading file", err)
-      loadPath('base', filePaths[0])
-      loadPath('v1', filePaths[1])
-      loadPath('v2', filePaths[2])
+      loadPath('base', filePaths[0], 'Base')
+      loadPath('v1', filePaths[1], 'Future 1')
+      loadPath('v2', filePaths[2], 'Future 2')
     else
       $scope.baseContent =
         text: "invoke with three file paths (base, v1, v2) as arguments" # Find better way of displaying this
