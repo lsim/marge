@@ -6,4 +6,6 @@ define ['app'], (app) ->
     diff: (file1, file2) ->
       diff_match_patch.diff_main(file1, file2)
 
-    dmp: diff_match_patch
+    getDmp: ->
+      console.warn "Direct access to DMP api!"
+      diff_match_patch

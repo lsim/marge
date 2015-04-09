@@ -29,7 +29,7 @@ define ['app', '_', 'menu/mainMenu',
       $scope.baseContent =
         text: "invoke with three file paths (base, v1, v2) as arguments" # Find better way of displaying this
         name: "Error"
-    $scope.matchThresholdString = diffsvc.dmp.Match_Threshold
+    $scope.matchThresholdString = diffsvc.getDmp().Match_Threshold
     $scope.v1First = true
 
     $scope.editorSettings =
@@ -47,7 +47,7 @@ define ['app', '_', 'menu/mainMenu',
 
     ###
     threeWayMerge = (v0, v1, v2) ->
-      dmp = diffsvc.dmp
+      dmp = diffsvc.getDmp()
 #      dmp.Match_Threshold = 0.1
       patches = dmp.patch_make(v0, v2)
       [resultText, status] = dmp.patch_apply(patches, v1)
@@ -64,7 +64,7 @@ define ['app', '_', 'menu/mainMenu',
       differences = diffsvc.diff($scope.baseContent.text, $scope.v2Content.text)
       $scope.v2Content.highlights = highlightsvc(differences, 1)
       $scope.$apply()
-    , 20)
+    , 50)
 
     $scope.$watch "baseContent.text + v1Content.text + v2Content.text", ->
       updateDiffs()
@@ -73,7 +73,7 @@ define ['app', '_', 'menu/mainMenu',
     updateThreewayMerge = _.debounce(->
       return unless $scope.matchThresholdString? and $scope.v1First? and $scope.baseContent? and $scope.v1Content? and $scope.v2Content?
       matchThreshold = parseFloat($scope.matchThresholdString)
-      diffsvc.dmp.Match_Threshold = matchThreshold
+      diffsvc.getDmp().Match_Threshold = matchThreshold
       v1First = $scope.v1First
       if v1First
         [merged, result] = threeWayMerge($scope.baseContent.text, $scope.v1Content.text, $scope.v2Content.text)
@@ -85,7 +85,7 @@ define ['app', '_', 'menu/mainMenu',
         name: "Result"
         path: "#{matchThreshold}|#{if v1First then "v1->v2" else "v2->v1"}|#{result.join(",")}"
       $scope.$apply()
-    , 20)
+    , 50)
 
     $scope.$watch 'matchThresholdString', ->
       updateThreewayMerge()
