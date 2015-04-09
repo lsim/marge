@@ -38,7 +38,7 @@ define ['app', '_', 'menu/mainMenu', 'diffEngines/googleDmp',
         text: result.text
         mode: $scope.future1Content.mode
         name: "Result"
-        path: "foobar"
+        path: result.statusText
         highlights: result.highlights
       $scope.future1Content.highlights = future1.highlights
       $scope.future2Content.highlights = future2.highlights

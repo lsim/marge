@@ -21,7 +21,7 @@ define [], () ->
     [resultText, status] = diff_match_patch.patch_apply(patches, v1)
     console.debug "merge status", status
     # return
-    resultText
+    [resultText, status]
 
   generateFutureHighlights = (base, future) ->
     differences = diff(base, future)
@@ -64,7 +64,7 @@ define [], () ->
     []
 
   threeWayMerge: (base, future1, future2) ->
-    resultText = merge(base, future1, future2)
+    [resultText, status] = merge(base, future1, future2)
 
     # return
     base:
@@ -79,4 +79,5 @@ define [], () ->
     result:
       text: resultText
       highlights: []
+      statusText: "(individual patch status: #{status.join(",")})"
 
