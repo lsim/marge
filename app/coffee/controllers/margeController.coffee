@@ -1,15 +1,13 @@
-define ['app', '_', 'menu/mainMenu',
+define ['app', '_', 'menu/mainMenu', 'diffEngines/googleDmp',
         'services/file',
-        'services/diff',
-        'services/aceMode',
-        'services/highlight'
-], (app, _, menu) ->
+        'services/aceMode'
+], (app, _, menu, diff) ->
   minimist = require('minimist')
   mainProcess = require('remote').process
 
   # This is the outermost controller of the application. It parses command line arguments etc
 
-  app.controller 'margeController', ($scope, filesvc, diffsvc, aceModeSvc, highlightsvc) ->
+  app.controller 'margeController', ($scope, filesvc, aceModeSvc) ->
     console.debug "command line arguments", mainProcess.argv
     argv = minimist(mainProcess.argv)
     if argv._.length >= 3
@@ -23,77 +21,34 @@ define ['app', '_', 'menu/mainMenu',
             name: displayName
         , (err) -> console.error "Failed loading file", err)
       loadPath('base', filePaths[0], 'Base')
-      loadPath('v1', filePaths[1], 'Future 1')
-      loadPath('v2', filePaths[2], 'Future 2')
+      loadPath('future1', filePaths[1], 'Future 1')
+      loadPath('future2', filePaths[2], 'Future 2')
     else
       $scope.baseContent =
-        text: "invoke with three file paths (base, v1, v2) as arguments" # Find better way of displaying this
+        text: "invoke with three file paths (base, future1, future2) as arguments" # Find better way of displaying this
         name: "Error"
-    $scope.matchThresholdString = diffsvc.getDmp().Match_Threshold
-    $scope.v1First = true
 
     $scope.editorSettings =
       theme: "monokai"
 
-    ###
-      3-way merge pseudocode:
-      patches = patch_make(V0, V2)
-      (V3, result) = patch_apply(patches, V1)
-
-      The result list is an array of true/false values.  If it's all true,
-      then the merge worked great.  If there's a false, then one of the
-      patches could not be applied.  In that case it might be worth swapping
-      V1 and V2, trying again and seeing if the results are better.
-
-    ###
-    threeWayMerge = (v0, v1, v2) ->
-      dmp = diffsvc.getDmp()
-#      dmp.Match_Threshold = 0.1
-      patches = dmp.patch_make(v0, v2)
-      [resultText, status] = dmp.patch_apply(patches, v1)
-#      console.debug "3way", resultText, status, patches
-      [resultText, status]
-
-    updateDiffs = _.debounce( ->
-      return unless $scope.baseContent? and $scope.v1Content? and $scope.v2Content?
-      differences = diffsvc.diff($scope.baseContent.text, $scope.v1Content.text)
-
-#      $scope.baseContent.highlights = highlightsvc(differences, -1)
-      $scope.v1Content.highlights = highlightsvc(differences, 1)
-
-      differences = diffsvc.diff($scope.baseContent.text, $scope.v2Content.text)
-      $scope.v2Content.highlights = highlightsvc(differences, 1)
-      $scope.$apply()
-    , 50)
-
-    $scope.$watch "baseContent.text + v1Content.text + v2Content.text", ->
-      updateDiffs()
-      updateThreewayMerge()
-
-    updateThreewayMerge = _.debounce(->
-      return unless $scope.matchThresholdString? and $scope.v1First? and $scope.baseContent? and $scope.v1Content? and $scope.v2Content?
-      matchThreshold = parseFloat($scope.matchThresholdString)
-      diffsvc.getDmp().Match_Threshold = matchThreshold
-      v1First = $scope.v1First
-      if v1First
-        [merged, result] = threeWayMerge($scope.baseContent.text, $scope.v1Content.text, $scope.v2Content.text)
-      else
-        [merged, result] = threeWayMerge($scope.baseContent.text, $scope.v2Content.text, $scope.v1Content.text)
+    updateThreeWayMerge = _.debounce(->
+      return unless $scope.baseContent? and $scope.future1Content? and $scope.future2Content?
+      {base, future1, future2, result} = diff.threeWayMerge($scope.baseContent.text, $scope.future1Content.text, $scope.future2Content.text)
       $scope.resultContent =
-        text: merged
-        mode: $scope.v1Content.mode
+        text: result.text
+        mode: $scope.future1Content.mode
         name: "Result"
-        path: "#{matchThreshold}|#{if v1First then "v1->v2" else "v2->v1"}|#{result.join(",")}"
+        path: "foobar"
+        highlights: result.highlights
+      $scope.future1Content.highlights = future1.highlights
+      $scope.future2Content.highlights = future2.highlights
+      $scope.baseContent.highlights = base.highlights
       $scope.$apply()
     , 50)
 
-    $scope.$watch 'matchThresholdString', ->
-      updateThreewayMerge()
-      updateDiffs()
-
-    $scope.$watch 'v1First', ->
-      updateThreewayMerge()
-      updateDiffs()
+    $scope.$watch "baseContent.text", updateThreeWayMerge
+    $scope.$watch "future1Content.text", updateThreeWayMerge
+    $scope.$watch "future2Content.text", updateThreeWayMerge
 
     $scope.themeStyle = { backgroundColor: 'white', color: 'black' }
     $scope.$on 'marge:theme-style-change', (event, style) ->
