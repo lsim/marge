@@ -44,10 +44,22 @@ body {
     }
   }
 
-  .marge_difference {
-    background-color: #555500;
+  [class*='marge_highlight_'] {
     position: absolute;
+    border-radius: 2px;
   }
+
+  .marge_highlight_addition {
+    background-color: forestgreen;
+  }
+  .marge_highlight_deletion {
+    background-color: pink;
+  }
+
+//  .marge_difference {
+//    background-color: #555500;
+//    position: absolute;
+//  }
 
 }
 

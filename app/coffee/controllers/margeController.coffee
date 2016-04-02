@@ -39,10 +39,12 @@ define ['app', '_', 'menu/mainMenu', 'diffEngines/googleDmp',
         mode: $scope.future1Content.mode
         name: "Result"
         path: result.statusText
-        highlights: result.highlights
-      $scope.future1Content.highlights = future1.highlights
-      $scope.future2Content.highlights = future2.highlights
-      $scope.baseContent.highlights = base.highlights
+#        highlights: result.highlights
+#      $scope.future1Content.highlights = future1.highlights
+      $scope.future1Content.chunks = future1.chunks
+#      $scope.future2Content.highlights = future2.highlights
+      $scope.future2Content.chunks = future2.chunks
+#      $scope.baseContent.highlights = base.highlights
       $scope.$apply()
     , 50)
 

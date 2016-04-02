@@ -15,16 +15,17 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
       </div>
     """
     controller: ['$scope', ($scope) ->
-
       markerIds = []
       updateHighlights = ->
-        return unless $scope.content?.highlights? and $scope.session?
+        return unless ($scope.content?.chunks? or $scope.content?.text) and $scope.session?
         _.each markerIds, (markerId) ->
           $scope.session.removeMarker(markerId)
         markerIds = []
-        $scope.content.highlights.forEach((highlight) ->
-          range = new Range(highlight.lineStart, highlight.colStart, highlight.lineEnd, highlight.colEnd)
-          markerIds.push $scope.session.addMarker(range, 'marge_difference', 'text'))
+        if $scope.content.chunks
+          $scope.content.chunks.forEach((chunk) ->
+            range = new Range(chunk.lineStart, chunk.colStart, chunk.lineEnd, chunk.colEnd)
+            markerIds.push $scope.session.addMarker(range, "marge_highlight_#{chunk.type}", 'text')
+          )
 #        $scope.session.addGutterDecoration(2, 'marge-conflict-gutter') # Use something like this to place a conflict glyph in the gutter on appropriate lines
 
       updateMode = ->
@@ -40,8 +41,8 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
           $scope.$emit "marge:theme-style-change", computedStyle
         )
 
-
-      $scope.$watch "content.highlights", updateHighlights
+      $scope.$watch "content.chunks", updateHighlights
+#      $scope.$watch "content.text", updateHighlights
 
       $scope.$watch "content.mode", updateMode
 
@@ -51,6 +52,7 @@ define ['app', 'ace/ace', '_'], (app, ace, _) ->
         $scope.session = editor.session
         $scope.editor = editor
         $scope.editor.renderer.setShowInvisibles(true)
+        $scope.editor.setReadOnly(true)
         updateHighlights()
         updateMode()
         updateTheme()
