@@ -1,10 +1,7 @@
 define [], ->
-
-  remote = require 'remote'
-  Menu = remote.require 'menu'
-  BrowserWindow = remote.require 'browser-window'
-  #  MenuItem = remote.require 'menu-item'
-  app = remote.require 'app'
+  electron = require('electron')
+  {Menu, MenuItem, BrowserWindow} = electron.remote;
+  app = electron.app
 
   template = [
     {

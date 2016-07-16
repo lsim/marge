@@ -1,6 +1,7 @@
 
-app = require 'app'  # Module to control application life.
-BrowserWindow = require 'browser-window'  # Module to create native browser window.
+electron = require('electron')
+app = electron.app # Module to control application life.
+BrowserWindow = electron.BrowserWindow  # Module to create native browser window.
 
 # Report crashes to our server.
 #require('crash-reporter').start()
@@ -22,7 +23,7 @@ app.on 'ready', () ->
 
   # and load the index.html of the app.
   indexPath = "file://#{__dirname}/html/index.html"
-  mainWindow.loadUrl(indexPath)
+  mainWindow.loadURL(indexPath)
 
   # Emitted when the window is closed.
   mainWindow.on 'closed', () ->
