@@ -5,7 +5,7 @@ define ['app', '_', 'menu/mainMenu',
         'services/highlight'
 ], (app, _, menu) ->
   minimist = require('minimist')
-  mainProcess = require('remote').process
+  mainProcess = require('electron').remote.process
 
   # This is the outermost controller of the application. It parses command line arguments etc
 

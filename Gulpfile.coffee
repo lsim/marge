@@ -85,13 +85,6 @@ gulp.task 'clean', (cb) -> cleanBinFolder(cb)
 gulp.task 'build', doBuild
 gulp.task 'default', ['watch'], ->
 
-downloadAtomShell = require 'gulp-download-atom-shell'
-gulp.task 'getatomshell', (cb) ->
-  downloadAtomShell(
-    version: '0.22.3',
-    outputDir: 'binaries'
-  , cb)
-
 runShellCmd = (cmd, args...) ->
   proc = spawn cmd, args
   proc.stdout.on 'data', (data) -> gutil.log("#{cmd} stdout: " + data)
@@ -99,7 +92,7 @@ runShellCmd = (cmd, args...) ->
   proc.on 'close', (code) -> gutil.log "#{cmd} exited with code #{code}"
 
 gulp.task 'demo-mac', ['build'], ->
-  runShellCmd 'binaries/Atom.app/Contents/MacOS/Atom', 'app', 'corpus/original.coffee', 'corpus/future1.coffee', 'corpus/future2.coffee'
+  runShellCmd './node_modules/.bin/electron', 'app', 'corpus/original.coffee', 'corpus/future1.coffee', 'corpus/future2.coffee'
 
 #
 # Dist related tasks
@@ -108,14 +101,16 @@ gulp.task 'demo-mac', ['build'], ->
 gulp.task 'clean-dist', (cb) ->
   rimraf('dist/**', cb)
 
-atomshell = require('gulp-atom-shell')
+zip = require('gulp-vinyl-zip')
+electron = require('gulp-atom-electron')
+
 gulp.task 'dist-mac', ['build','clean-dist'], ->
   gulp.src(['app/**', '!app/{coffee,scss,lib,html,bower_components}' ])
-  .pipe(handle(atomshell(
-      version: '0.22.3'
+    .pipe(electron(
+      version: '1.2.7'
       platform: 'darwin'
-    )))
-  .pipe(handle(atomshell.zfsdest('dist/app.zip')))
+    ))
+    .pipe(zip.dest('./dist/app.zip'))
 
 gulp.task 'unpack-mac-dist', ['dist-mac'], ->
   runShellCmd "open", "-W", "dist/app.zip" # All the sane ways of doing this that I have tried resulted in corrupted runtime :/
